@@ -2,114 +2,61 @@
 
 class Request
 {
-    protected static $instance;
+	protected $method;
+	protected $requestUri;
+	protected $httpVersion;
 
-    public $scheme;
-    public $body;
-    public $path;
-    public $method;
-    public $encoding;
+	protected $headers;
+	protected $body;
+	protected $cookies;
 
-    public $GET;
-    public $POST;
-    public $COOKIES;
-    public $FILES;
-    public $META;
+	protected $GET;
+	protected $POST;
 
-    public static function create()
-    {
-        if (empty(self::$instance)) {
-            self::$instance = self::constructFromEnvironment();
-        }
+	protected $serverInfo;
 
-        return self::$instance;
-    }
+	public function __construct($method, $requestUri, $httpVersion, $headers = null, $body = null, $cookies = null, $GET = null, $POST = null, $serverInfo = null)
+	{
+		$this->method = $method;
+		$this->requestUri = $requestUri;
+		$this->httpVersion = $httpVersion;
 
-    public static function constructFromEnvironment()
-    {
-        self::$instance = new Request(  $_GET,
-                                        $_POST,
-                                        $_COOKIES,
-                                        $_FILES,
-                                        $_SERVER);
-        return self::$instance;
-    }
+		$this->headers = $headers;
+		$this->body = $body;
+		$this->cookies = $cookies;
+		$this->GET = $GET;
+		$this->POST = $POST;
+		$this->serverInfo = $serverInfo;
+	}
 
-    public function __construct($get = array(),
-                                $post = array(),
-                                $cookies = array(),
-                                $files = array(),
-                                $servers = array())
-    {
-        $this->GET = $get;
-        $this->POST = $post;
-        $this->COOKIES = $cookies;
-        $this->FILES = $files;
-        $this->META = $servers;
+	public static function createFromEnvironments()
+	{
+		$method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+		$requestUri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
+		$httpVersion = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1';
 
-        $this->setScheme();
-        $this->setPath();
-        $this->setMethod();
-        $this->setEncoding();
-    }
+        // Construct headers from envs
+        $headers['Accept'] = isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT']) : '';
+        $headers['Accept-Charset'] = isset($_SERVER['HTTP_ACCEPT_CHARSET']) ? $_SERVER['HTTP_ACCEPT_CHARSET'] : '';
+        $headers['Accept-Encoding'] = isset($_SERVER['HTTP_ACCEPT_ENCODING']) ? $_SERVER['HTTP_ACCEPT_ENCODING'] : '';
+        $headers['Accept-Language'] = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $_SERVER['HTTP_ACCEPT_LANGUAGE'] : '';
+        $headers['Host'] = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
+        $headers['Connection'] = isset($_SERVER['HTTP_CONNECTION']) ? $_SERVER['HTTP_CONNECTION'] : '';
+        $headers['Referer'] = isset($_SERVER['HTTP_REFERER'] ? $_SERVER['HTTP_REFERER'] : '';
+        $headers['User-Agent'] = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+        
+		$headers = new Headers($headers); 
+		$body = file_get_contents('php://input');
+		$cookies = $_COOKIE; //TODO: create a Cookie class to encapsulate $_COOKIE
+		$GET = $_GET;
+		$POST = $_POST;
 
+        // Construct server info
+        $serverInfo['ScriptName'] = isset($_SERVER['SCRIPT_NAME') ? $_SERVER['SCRIPT_NAME'] : '';
+        $serverInfo = new ServerInfo($serverInfo);
 
+		return new Request($method, $requestUri, $httpVersion, $headers, $body, $cookies, $GET, $POST, $serverInfo);
+	}
 
-    public function getHost()
-    {
-        return $this->META['HTTP_HOST'];
-    }
-
-    public function getPort()
-    {
-        return $this->META['SERVER_PORT'];
-    }
-
-    public function getFullPath()
-    {
-        return ;
-    }
-
-    public function buildAbsoluteUri()
-    {
-        //
-    }
-
-    public function isSecure()
-    {
-        //
-    }
-
-    public function isAjax()
-    {
-        //
-    }
-
-    public function setScheme($scheme = 'http')
-    {
-        if (isset($this->META['REQUEST_SCHEME'])) {
-            $this->scheme = $this->META['REQUEST_SCHEME'];
-        } else {
-            $this->scheme = $scheme;
-        }
-    }
-
-    public function setPath($path = null)
-    {
-        //
-    }
-
-    public function setMethod($method = 'GET')
-    {
-        if (isset($this->META['REQUEST_METHOD'])) {
-            $this->method = $this->META['REQUEST_METHOD'];
-        } else {
-            $this->method = $method
-        }
-    }
-
-    public function setEncoding()
-    {
-        //
-    }
+	
 }
