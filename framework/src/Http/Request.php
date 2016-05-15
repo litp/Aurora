@@ -2,6 +2,38 @@
 
 class Request
 {
+    protected $standardHeaders = array(
+        // General headers
+        'Cache-Control'            => '',
+        'Connection'               => '',
+        'Date'                     => '',
+        'Pragma'                   => '',
+        'Trailer'                  => '',
+        'Transfer-Encoding'        => '',
+        'Upgrade'                  => '',
+        'Via'                      => '',
+        'Warning'                  => '',
+        // Request headers
+        'Accept'                   => '',
+        'Accept-Charset'           => '',
+        'Accept-Encoding'          => '',
+        'Accept-Language'          => '',
+        'Authorization'            => '',
+        'Expect'                   => '',
+        'From'                     => '',
+        'Host'                     => '',
+        'If-Match'                 => '',
+        'If-Modified-Since'        => '',
+        'If-None-Match'            => '',
+        'If-Range'                 => '',
+        'If-Unmodified-Since'      => '',
+        'Max-Forwards'             => '',
+        'Proxy-Authorization'      => '',
+        'Range'                    => '',
+        'Referer'                  => '',
+        'TE'                       => '',
+        'User-Agent'               => '',
+    );
 	protected $method;
 	protected $requestUri;
 	protected $httpVersion;
@@ -21,12 +53,12 @@ class Request
 		$this->requestUri = $requestUri;
 		$this->httpVersion = $httpVersion;
 
-		$this->headers = $headers;
+        $this->headers = $this->setHeaders($headers);
 		$this->body = $body;
 		$this->cookies = $cookies;
 		$this->GET = $GET;
 		$this->POST = $POST;
-		$this->serverInfo = $serverInfo;
+		$this->serverInfo = $this->setServerInfo($serverInfo);
 	}
 
 	public static function createFromEnvironments()
@@ -45,7 +77,6 @@ class Request
         $headers['Referer'] = isset($_SERVER['HTTP_REFERER'] ? $_SERVER['HTTP_REFERER'] : '';
         $headers['User-Agent'] = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
         
-		$headers = new Headers($headers); 
 		$body = file_get_contents('php://input');
 		$cookies = $_COOKIE; //TODO: create a Cookie class to encapsulate $_COOKIE
 		$GET = $_GET;
@@ -53,10 +84,35 @@ class Request
 
         // Construct server info
         $serverInfo['ScriptName'] = isset($_SERVER['SCRIPT_NAME') ? $_SERVER['SCRIPT_NAME'] : '';
-        $serverInfo = new ServerInfo($serverInfo);
 
 		return new Request($method, $requestUri, $httpVersion, $headers, $body, $cookies, $GET, $POST, $serverInfo);
 	}
+    
+    public function setHeaders($headers)
+    {
+        $headers = $this->formatHeaders($headers);
+        $this->headers = new Collection($headers);
+        
+        return $this;
+    }
 
-	
+    protected function formatHeaders($headers)
+    {
+        function ucfirstArrayKey($value, &$key)
+        {
+            $key = implode('-',array_map('ucfirst', explode('-', $key)));
+        }
+
+        array_walk($headers, 'ucfirstArrayKey');
+
+        $mergedHeaders = array_replace($this->standardHeaders, $headers);
+        return array_intersect_key($mergedHeaders, $this->standardHeaders);
+    }
+
+    public function setServerInfo($serverInfo)
+    {
+        $this->serverInfo = new Collection($serverInfo);
+
+        return $this;
+    }    
 }
