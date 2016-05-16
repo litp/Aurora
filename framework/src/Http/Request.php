@@ -53,12 +53,12 @@ class Request
 		$this->requestUri = $requestUri;
 		$this->httpVersion = $httpVersion;
 
-        $this->headers = $this->setHeaders($headers);
+        $this->setHeaders($headers);
 		$this->body = $body;
 		$this->cookies = $cookies;
 		$this->GET = $GET;
 		$this->POST = $POST;
-		$this->serverInfo = $this->setServerInfo($serverInfo);
+		$this->setServerInfo($serverInfo);
 	}
 
 	public static function createFromEnvironments()
@@ -83,7 +83,7 @@ class Request
 		$POST = $_POST;
 
         // Construct server info
-        $serverInfo['ScriptName'] = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
+        $serverInfo['scriptName'] = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
 
 		return new Request($method, $requestUri, $httpVersion, $headers, $body, $cookies, $GET, $POST, $serverInfo);
 	}
