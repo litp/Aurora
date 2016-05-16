@@ -11,7 +11,7 @@ class Collection implements \IteratorAggregate, \Countable
 
     public function getIterator()
     {
-        return \ArrayIterator($this->data);
+        return new \ArrayIterator($this->data);
     }
 
     public function count()
@@ -21,7 +21,7 @@ class Collection implements \IteratorAggregate, \Countable
 
     public function __get($property)
     {
-        if (array_key_exists($property)) {
+        if (array_key_exists($property, $this->data)) {
             return $this->data[$property];
         }
 

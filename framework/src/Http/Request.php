@@ -34,20 +34,20 @@ class Request
         'TE'                       => '',
         'User-Agent'               => '',
     );
-	protected $method;
-	protected $requestUri;
-	protected $httpVersion;
+	public $method;
+	public $requestUri;
+	public $httpVersion;
 
-	protected $headers;
-	protected $body;
-	protected $cookies;
+	public $headers;
+	public $body;
+	public $cookies;
 
-	protected $GET;
-	protected $POST;
+	public $GET;
+	public $POST;
 
-	protected $serverInfo;
+	public $serverInfo;
 
-	public function __construct($method, $requestUri, $httpVersion, $headers = null, $body = null, $cookies = null, $GET = null, $POST = null, $serverInfo = null)
+	public function __construct($method, $requestUri, $httpVersion, $headers = array(), $body = null, $cookies = array(), $GET = array(), $POST = array(), $serverInfo = array())
 	{
 		$this->method = $method;
 		$this->requestUri = $requestUri;
@@ -68,13 +68,13 @@ class Request
 		$httpVersion = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1';
 
         // Construct headers from envs
-        $headers['Accept'] = isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT']) : '';
+        $headers['Accept'] = isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : '';
         $headers['Accept-Charset'] = isset($_SERVER['HTTP_ACCEPT_CHARSET']) ? $_SERVER['HTTP_ACCEPT_CHARSET'] : '';
         $headers['Accept-Encoding'] = isset($_SERVER['HTTP_ACCEPT_ENCODING']) ? $_SERVER['HTTP_ACCEPT_ENCODING'] : '';
         $headers['Accept-Language'] = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $_SERVER['HTTP_ACCEPT_LANGUAGE'] : '';
         $headers['Host'] = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
         $headers['Connection'] = isset($_SERVER['HTTP_CONNECTION']) ? $_SERVER['HTTP_CONNECTION'] : '';
-        $headers['Referer'] = isset($_SERVER['HTTP_REFERER'] ? $_SERVER['HTTP_REFERER'] : '';
+        $headers['Referer'] = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
         $headers['User-Agent'] = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
         
 		$body = file_get_contents('php://input');
@@ -83,7 +83,7 @@ class Request
 		$POST = $_POST;
 
         // Construct server info
-        $serverInfo['ScriptName'] = isset($_SERVER['SCRIPT_NAME') ? $_SERVER['SCRIPT_NAME'] : '';
+        $serverInfo['ScriptName'] = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
 
 		return new Request($method, $requestUri, $httpVersion, $headers, $body, $cookies, $GET, $POST, $serverInfo);
 	}
@@ -96,16 +96,15 @@ class Request
         return $this;
     }
 
-    protected function formatHeaders($headers)
+    public function formatHeaders($headers)
     {
-        function ucfirstArrayKey($value, &$key)
-        {
-            $key = implode('-',array_map('ucfirst', explode('-', $key)));
+        $formated = array();
+
+        foreach ($headers as $key => $value) {
+            $formated[implode('-',array_map('ucfirst', explode('-', $key)))] = $value;
         }
 
-        array_walk($headers, 'ucfirstArrayKey');
-
-        $mergedHeaders = array_replace($this->standardHeaders, $headers);
+        $mergedHeaders = array_replace($this->standardHeaders, $formated);
         return array_intersect_key($mergedHeaders, $this->standardHeaders);
     }
 
