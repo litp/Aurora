@@ -32,4 +32,9 @@ class Collection implements \IteratorAggregate, \Countable
     {
         $this->data[$property] = $value;
     }
+
+    public function __isset($property)
+    {
+        return isset($this->data[$property]);
+    }
 }
