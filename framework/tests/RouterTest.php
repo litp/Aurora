@@ -45,7 +45,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('/test', $result);
     }
 
-    public function testDispatch()
+    public function testDispatchWithNoParameter()
     {
         $this->routerTable = array(
             '/test' => array('TestController', 'test')
@@ -64,6 +64,58 @@ class RouterTest extends PHPUnit_Framework_TestCase
                 'scriptName' => '/index.php'
                 )             
             );
+        $this->router = new Router($this->routerTable);
+
+        $this->router->dispatch($this->request);
+    }
+    
+    public function testDispatchWithOneArgument()
+    {
+        $this->routerTable = array(
+            '/test' => array('TestController', 'test')
+        );
+
+        $this->request = new Request(
+            'GET',              //method
+            '/index.php/test/p1',  //requestUri
+            'HTTP/1.1',         //version
+            array(),            //headers
+            '',                 //body
+            array(),            //cookies
+            array(),            //GET
+            array(),            //POST
+            array(              // serverInfo
+                'scriptName' => '/index.php'
+            )
+        );
+
+        $this->router = new Router($this->routerTable);
+
+        $this->router->dispatch($this->request);
+        
+        //$this->expectOutputString();
+    }
+    
+    public function testDispatchWithMultiParameters()
+    {
+        $this->routerTable = array(
+            '/test' => array('TestController', 'test')
+        );
+
+        $this->request = new Request(
+            'GET',              //method
+            '/index.php/test/p1/p2',  //requestUri
+            'HTTP/1.1',         //version
+            array(),            //headers
+            '',                 //body
+            array(),            //cookies
+            array(),            //GET
+            array(),            //POST
+            array(              // serverInfo
+                'scriptName' => '/index.php'
+            )
+        );
+
         $this->router = new Router($this->routerTable);
 
         $this->router->dispatch($this->request);
