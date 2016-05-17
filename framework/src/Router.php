@@ -15,7 +15,7 @@ class Router
         $escapedRouterTable = array();
 
         foreach ($routerTable as $regex => $function) {
-            $escapedRouterTable['/' . addcslashes($regex, "\'\"\\\/") . '/'] = $function;
+            $escapedRouterTable['/' . addcslashes(rtrim($regex, '/'), "\'\"\\\/") . '/'] = $function;
         }
 
         return $escapedRouterTable;
@@ -41,17 +41,23 @@ class Router
     {
         $queryPath = $this->getQueryPath($request);
 
-        foreach ($this->directRouterTable as $uri => $function) {
-            if (preg_match($uri, $queryPath, $matches)) {
+        foreach ($this->directRouterTable as $uriRegex => $function) {
+            if (preg_match($uriRegex, $queryPath, $matches)) {
                 $parameterPath = str_replace($matches[0],'',$queryPath);
                 if ($parameterPath == '') {
-                    $parameters = null;
+                    $parameters = array();
                 } else {
                     $parameters = explode('/',rtrim($parameterPath, '/'));
                     array_shift($parameters);
                 }
 
-                return call_user_func($function,$parameters);
+                if (!is_array($function)) {
+                    return call_user_func($function, $parameters);
+                } else {
+                    $function[0] = new $function[0]($request);
+                    call_user_func_array($function,$parameters);
+                }
+
             }
         }
     }
