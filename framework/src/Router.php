@@ -1,13 +1,16 @@
 <?php
 class Router
 {
+    protected $config;
+
     protected $directRouterTable = array();
     protected $rootDirectory = '';  //unused yet!!
     protected $controllerInstance;
     
-    public function __construct($routerTable = array())
+    public function __construct($routerConfig)
     {
-        $this->directRouterTable = $this->escapeRouterTable($routerTable);
+        $this->config = $routerConfig;
+        $this->directRouterTable = $this->escapeRouterTable($this->config['router_table]);
     }
 
     public function escapeRouterTable($routerTable)
