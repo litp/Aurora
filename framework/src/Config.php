@@ -2,7 +2,7 @@
 
 class Config extends Collection
 {
-	public static function loadConfig($file = '')
+	public function __construct($file = '')
 	{
 		if (!empty($file)) {
 			$config = require $file;
