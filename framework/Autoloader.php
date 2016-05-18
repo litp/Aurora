@@ -1,20 +1,50 @@
 <?php
 
-define('ROOT_DIR', dirname(__DIR__));
-
-function autoloader($class)
+class Autoloader
 {
-	if (file_exists(ROOT_DIR . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $class . '.php')) {
-		require ROOT_DIR . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $class . '.php';
-	} else {
-		foreach( glob(ROOT_DIR . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR) as $directory) {
-			if (file_exists($directory . DIRECTORY_SEPARATOR . $class . '.php')) {
-				require $directory . DIRECTORY_SEPARATOR . $class . '.php';
-				break;
-			}
-		}	
-	}
+    protected $baseDir = __DIR__;
+    protected $jsonFile = '';
+    protected $directories = array();
+
+    public function __construct($jsonFile = 'autoload.json')
+    {
+        $this->jsonFile = $this->makeAbsoluteDir($jsonFile);
+        $this->directories = $this->loadDirectories($this->jsonFile);
+    }
+
+    public function autoload($className)
+    {
+        foreach ($this->directories as $dir) {
+            if ($this->autoloadFromDir($className, $this->makeAbsoluteDir($dir))) {
+                break;
+            }
+        }
+    }
+
+    public function autoloadFromDir($className, $directory)
+    {
+        if (file_exists($this->makeAbsoluteDir($className . '.php', $directory))) {
+            require $this->makeAbsoluteDir($className . '.php', $directory);
+        } else {
+            return false;
+        }
+
+       return true; 
+    }
+
+    protected function loadDirectories($file)
+    {
+        $autoload = json_decode(file_get_contents($file), true);
+        return $autoload['directory'];
+    }
+
+    protected function makeAbsoluteDir($directory, $baseDirectory = '')
+    {
+        $baseDirectory = empty($baseDirectory) ? $this->baseDir : $baseDirectory;
+        return join(DIRECTORY_SEPARATOR, array($baseDirectory, $directory));
+    }
 
 }
 
-spl_autoload_register('autoloader');
+$autoloader = new Autoloader();
+spl_autoload_register(array($autoloader, 'autoload'));
