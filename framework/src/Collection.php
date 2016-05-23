@@ -4,7 +4,7 @@ class Collection implements \IteratorAggregate, \Countable
 {
     protected $data;
 
-    public function __construct($data)
+    public function __construct($data = array())
     {
         $this->data = $data;
     }
