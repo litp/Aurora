@@ -4,15 +4,20 @@ class RouterTest extends PHPUnit_Framework_TestCase
 {
     protected $request;
     protected $router;
-    protected $routerTable = array(
-            '/test' => array('TestController', 'test')
-        );
+    protected $config;
+    protected $app;
+
+    public function setUp()
+    {
+        $this->config = new Config('config.test.php');
+        $this->app = new Application();
+        $this->app->config = $this->config;
+        $this->router = new Router($this->app);
+    }
 
 
     public function testEscapeRouterTable()
     {
-        $this->router = new Router($this->routerTable);
-
         $testTable = array(
             '/test' => 'test'    
         );
@@ -24,8 +29,6 @@ class RouterTest extends PHPUnit_Framework_TestCase
 
     public function testGetQueryPath()
     {
-        $this->router = new Router($this->routerTable);
-
         $this->request = new Request(
             'GET',              //method
             '/index.php/test',  //requestUri
@@ -47,10 +50,6 @@ class RouterTest extends PHPUnit_Framework_TestCase
 
     public function testDispatchWithNoParameter()
     {
-        $this->routerTable = array(
-            '/test' => array('TestController', 'test')
-        );
-
         $this->request = new Request(
             'GET',              //method
             '/index.php/test',  //requestUri
@@ -64,17 +63,12 @@ class RouterTest extends PHPUnit_Framework_TestCase
                 'scriptName' => '/index.php'
                 )             
             );
-        $this->router = new Router($this->routerTable);
 
         $this->router->dispatch($this->request);
     }
     
     public function testDispatchWithOneArgument()
     {
-        $this->routerTable = array(
-            '/test' => array('TestController', 'test')
-        );
-
         $this->request = new Request(
             'GET',              //method
             '/index.php/test/p1',  //requestUri
@@ -89,8 +83,6 @@ class RouterTest extends PHPUnit_Framework_TestCase
             )
         );
 
-        $this->router = new Router($this->routerTable);
-
         $this->router->dispatch($this->request);
         
         //$this->expectOutputString();
@@ -98,10 +90,6 @@ class RouterTest extends PHPUnit_Framework_TestCase
     
     public function testDispatchWithMultiParameters()
     {
-        $this->routerTable = array(
-            '/test' => array('TestController', 'test')
-        );
-
         $this->request = new Request(
             'GET',              //method
             '/index.php/test/p1/p2',  //requestUri
@@ -115,9 +103,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
                 'scriptName' => '/index.php'
             )
         );
-
-        $this->router = new Router($this->routerTable);
-
+        
         $this->router->dispatch($this->request);
     }
 }
