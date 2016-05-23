@@ -10,6 +10,6 @@ class Config extends Collection
 			$config = require 'default_config.php';
 		}
 
-		return new Collection($config);
+		parent::__construct($config);
 	}
 }
