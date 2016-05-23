@@ -1,16 +1,16 @@
 <?php
 class Router
 {
-    protected $config;
+    protected $app;
 
     protected $directRouterTable = array();
     protected $rootDirectory = '';  //unused yet!!
     protected $controllerInstance;
     
-    public function __construct($routerConfig)
+    public function __construct($app)
     {
-        $this->config = $routerConfig;
-        $this->directRouterTable = $this->escapeRouterTable($this->config['router_table]);
+        $this->app = $app;
+        $this->directRouterTable = $this->escapeRouterTable($this->app->config->Router['router_table']);
     }
 
     public function escapeRouterTable($routerTable)
@@ -57,7 +57,7 @@ class Router
                 if (!is_array($function)) {
                     return call_user_func($function, $parameters);
                 } else {
-                    $function[0] = new $function[0]($request);
+                    $function[0] = new $function[0]($this->app, $request);
                     call_user_func_array($function,$parameters);
                 }
 
