@@ -7,5 +7,6 @@ return array(
             '/help' => array('TestController', 'test')
             )
         ),
-    'Misc' => array()
+    'Misc' => array(),
+    'ForTest' => 'for testing'
     );
