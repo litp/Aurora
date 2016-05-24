@@ -31,6 +31,12 @@ class Autoloader
 
        return true; 
     }
+    
+    public function setBaseDir($baseDir)
+    {
+        $this->baseDir = $baseDir;
+        return $this;
+    }
 
     protected function loadDirectories($file)
     {
