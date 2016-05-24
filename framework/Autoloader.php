@@ -41,6 +41,11 @@ class Autoloader
     protected function loadDirectories($file)
     {
         $autoload = json_decode(file_get_contents($file), true);
+        
+        foreach ($autoload['directory'] as &$autoloadDir) {
+            $autoloadDir = ltrim($autoloadDir, DIRECTORY_SEPARATOR);
+        }
+        
         return $autoload['directory'];
     }
 
