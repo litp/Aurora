@@ -3,5 +3,8 @@
         "src",
         "src/Http",
         "tests"
-        ]
+    ],
+    "psr4": {
+      "Litp\\Aurora": "src"
+    }
 }

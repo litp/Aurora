@@ -15,4 +15,13 @@ class AutoloaderTest extends PHPUnit_Framework_TestCase
 
 		$this->assertInstanceOf('ServerInfo', $serverInfo);
 	}
+
+	public function testPsr4Autoloader()
+    {
+        $testClass = new \Litp\Aurora\Collection();
+        $testClass2 = new \Litp\Aurora\Http\Headers();
+
+        $this->assertInstanceOf('\Litp\Aurora\Collection', $testClass);
+        $this->assertInstanceOf('\Litp\Aurora\Http\Headers', $testClass2);
+    }
 }
