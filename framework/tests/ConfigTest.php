@@ -1,5 +1,7 @@
 <?php
 
+use Litp\Aurora\Config;
+
 class ConfigTest extends PHPUnit_Framework_TestCase
 {
     protected $config;
@@ -11,7 +13,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 
     public function testLoadConfig()
     {
-        $this->assertInstanceOf('Config', $this->config);
+        $this->assertInstanceOf('\Litp\Aurora\Config', $this->config);
     }
 
     public function testLoadedConfigArray()
