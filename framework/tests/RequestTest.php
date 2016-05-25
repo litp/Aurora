@@ -1,5 +1,7 @@
 <?php
 
+use Litp\Aurora\Http\Request;
+
 class RequestTest extends PHPUnit_Framework_TestCase
 {
     public $request;
@@ -10,7 +12,7 @@ class RequestTest extends PHPUnit_Framework_TestCase
 
 		$request = Request::createFromEnvironments();
 
-		$this->assertInstanceOf('Request', $request);
+		$this->assertInstanceOf('\Litp\Aurora\Http\Request', $request);
         $this->assertEquals('GET', $request->method);
         $this->assertEquals('/index.php/help', $request->requestUri);
         $this->assertEquals('HTTP/1.1', $request->httpVersion);
@@ -39,7 +41,7 @@ class RequestTest extends PHPUnit_Framework_TestCase
 
     public function testInstacneRequest()
     {
-        $this->assertInstanceOf('Request', $this->request);
+        $this->assertInstanceOf('\Litp\Aurora\Http\Request', $this->request);
     }
 
     public function testSetHeaders()
