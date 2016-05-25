@@ -1,5 +1,7 @@
 <?php
 
+namespace Litp\Aurora\Http;
+
 class Request
 {
     protected $standardHeaders = array(

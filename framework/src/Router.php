@@ -1,4 +1,7 @@
 <?php
+
+namespace Litp\Aurora;
+
 class Router
 {
     protected $app;

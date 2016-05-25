@@ -1,5 +1,7 @@
 <?php
 
+namespace Litp\Aurora;
+
 class Config extends Collection
 {
 	public function __construct($file = '')

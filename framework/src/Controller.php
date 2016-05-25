@@ -1,11 +1,7 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: tianpeng
- * Date: 17/5/16
- * Time: 11:32 PM
- */
+namespace Litp\Aurora;
+
 class Controller
 {
     protected $request;
