@@ -1,5 +1,7 @@
 <?php
 
+namespace Litp\Aurora;
+
 class Collection implements \IteratorAggregate, \Countable
 {
     protected $data;
