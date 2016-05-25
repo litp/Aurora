@@ -1,5 +1,10 @@
 <?php
 
+use Litp\Aurora\Config;
+use Litp\Aurora\Application;
+use Litp\Aurora\Router;
+use Litp\Aurora\Http\Request;
+
 class RouterTest extends PHPUnit_Framework_TestCase
 {
     protected $request;

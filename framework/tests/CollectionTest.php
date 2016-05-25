@@ -1,5 +1,7 @@
 <?php
 
+use Litp\Aurora\Collection;
+
 class CollectionTest extends PHPUnit_Framework_TestCase
 {
     public $collection;
@@ -18,7 +20,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
 
     public function testCreateCollection()
     {
-        $this->assertInstanceOf('Collection', $this->collection);
+        $this->assertInstanceOf('\Litp\Aurora\Collection', $this->collection);
     }
 
     public function testGet()

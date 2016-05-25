@@ -2,6 +2,8 @@
 
 namespace Litp\Aurora\Http;
 
+use Litp\Aurora\Collection;
+
 class Request
 {
     protected $standardHeaders = array(
