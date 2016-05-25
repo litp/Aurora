@@ -4,9 +4,9 @@ class AutoloaderTest extends PHPUnit_Framework_TestCase
 {
 	public function testLoadFiles()
 	{
-		$router = new Router();
+		$router = new Collection();
 
-		$this->assertInstanceOf('Router', $router);
+		$this->assertInstanceOf('Collection', $router);
 	}
 
 	public function testLoadFileInsideSubdirectory()
